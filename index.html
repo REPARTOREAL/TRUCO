@@ -6,7 +6,7 @@
 <title>TUTRUCON — Truco Argentino Online</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Pacifico&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <style>
@@ -40,8 +40,8 @@ button{font-family:'Baloo 2',sans-serif;}
   transform:perspective(300px) rotateX(28deg);transform-origin:top;}
 .vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,transparent 30%,rgba(0,0,0,.55) 100%);}
 .neon{position:absolute;top:9%;left:50%;transform:translateX(-50%) rotate(-4deg);
-  font-family:'Pacifico',cursive;font-size:clamp(1.6rem,4vw,3rem);color:#ff9ad5;white-space:nowrap;
-  text-shadow:0 0 6px #ff5eb8,0 0 16px #ff2ea6,0 0 34px #e0148c,0 0 60px #b00b6e;
+  font-family:'Lilita One',cursive;font-size:clamp(1.5rem,3.6vw,2.7rem);color:#ffd36b;white-space:nowrap;letter-spacing:1px;
+  text-shadow:0 0 6px #ffb238,0 0 16px #ff9412,0 0 34px #d9700a,0 0 60px #a34e04;
   opacity:.9;animation:neonflick 7s infinite;}
 @keyframes neonflick{0%,93%,96%,100%{opacity:.9}94%{opacity:.45}95%{opacity:.85}}
 .stool{position:absolute;bottom:18%;width:54px;height:120px;filter:blur(2px) brightness(.55);}
@@ -294,6 +294,7 @@ button{font-family:'Baloo 2',sans-serif;}
 /* ═══════════ MODALES ═══════════ */
 .overlay{position:fixed;inset:0;background:rgba(4,10,18,.82);z-index:100;display:none;align-items:center;justify-content:center;padding:1rem;}
 .overlay.on{display:flex;}
+#ov-win{background:rgba(4,10,18,.45);}
 .modal{background:linear-gradient(180deg,#15283e,#0d1b2c);border:2px solid var(--gold);border-radius:20px;
   padding:2rem 1.6rem;max-width:380px;width:100%;text-align:center;display:flex;flex-direction:column;gap:.9rem;}
 .modal h1{font-size:1.7rem;}
@@ -415,10 +416,10 @@ button{font-family:'Baloo 2',sans-serif;}
   </div>
 
   <div class="myzone" id="myzone">
-    <div class="myinfo" id="myinfo">Tu mano</div>
+    <div class="myfan" id="myfan"></div>
     <div class="actionrow" id="ctxrow"></div>
     <div class="actionrow" id="fixedrow"></div>
-    <div class="myfan" id="myfan"></div>
+    <div class="myinfo" id="myinfo">Tu mano</div>
   </div>
 
   <button class="chat-fab" id="chatfab" onclick="toggleChat()">💬<span class="fabdot" id="fabdot">0</span></button>
@@ -437,7 +438,8 @@ button{font-family:'Baloo 2',sans-serif;}
 <div class="overlay" id="ov-win">
   <div class="modal">
     <div class="bigemoji" id="win-emo">🏆</div>
-    <h1 id="win-t">¡Ganaron!</h1>
+    <h1 id="win-t">¡VICTORIA!</h1>
+    <p id="win-sub"></p>
     <div class="fscore" id="win-s">0 — 0</div>
     <button class="bigbtn btn-gold" onclick="doReset()">🔄 REVANCHA</button>
     <button class="bigbtn btn-cream" onclick="leaveRoom()">Salir</button>
@@ -577,6 +579,12 @@ function cantaOK(g, seat) {
   return p === null ? true : p === seat;
 }
 function florAny(g) { for (var k in g.flor.decl) if (g.flor.decl[k]) return true; return false; }
+function teamName(g, t) {
+  var ns = [];
+  for (var i = 0; i < g.n; i++) if (g.seats[i].team === t) ns.push(g.seats[i].name);
+  if (ns.length <= 1) return ns[0] || (t === 'A' ? 'Equipo 1' : 'Equipo 2');
+  return ns.slice(0, -1).join(', ') + ' y ' + ns[ns.length - 1];
+}
 function anyWait(g) { return !!(g.env.waitTeam || g.tru.waitTeam || g.flor.waitTeam); }
 function log(g, seat, text) {
   g.log.push({ i: g.log.length ? g.log[g.log.length - 1].i + 1 : 1, s: seat, x: text });
@@ -585,10 +593,10 @@ function log(g, seat, text) {
 function addPts(g, team, p, label) {
   if (p <= 0) return;
   g.scores[team] = Math.min(g.target, g.scores[team] + p); /* tope: el score nunca supera el objetivo */
-  log(g, -1, label + ': +' + p + ' para ' + (team === 'A' ? 'Equipo 1' : 'Equipo 2'));
+  log(g, -1, label + ': +' + p + ' para ' + teamName(g, team));
   if (g.scores[team] >= g.target) {
     g.status = 'finished'; g.winner = team; g.handOver = true;
-    log(g, -1, '🏆 ¡Ganó ' + (team === 'A' ? 'Equipo 1' : 'Equipo 2') + ' ' + g.scores.A + '-' + g.scores.B + '!');
+    log(g, -1, '🏆 ¡Ganó ' + teamName(g, team) + ' ' + g.scores.A + '-' + g.scores.B + '!');
   }
 }
 function faltaVal(g) { return Math.max(1, g.target - Math.max(g.scores.A, g.scores.B)); }
@@ -653,7 +661,7 @@ function stepTurn(g) {
     log(g, -1, 'Baza ' + (g.trick + 1) + ': ¡parda!');
   } else {
     for (var q = 0; q < ord.length; q++) if (winners.indexOf(ord[q]) >= 0 && teamOf(g, ord[q]) === res) { g.leader = ord[q]; break; }
-    log(g, -1, 'Baza ' + (g.trick + 1) + ': ' + (res === 'A' ? 'Equipo 1' : 'Equipo 2'));
+    log(g, -1, 'Baza ' + (g.trick + 1) + ': ' + teamName(g, res));
   }
   var dec = decide(g.results, teamOf(g, g.mano));
   if (dec) { finishHand(g, dec, g.tru.val, 'Mano'); return; }
@@ -674,7 +682,7 @@ function resolveEnvidoQuiero(g) {
   }
   var winT = teamOf(g, bestSeat);
   var pts = chainQuieroVal(g);
-  log(g, -1, 'Envido: Eq1=' + (vals.A < 0 ? '-' : vals.A) + ' Eq2=' + (vals.B < 0 ? '-' : vals.B));
+  log(g, -1, 'Envido: ' + teamName(g, 'A') + '=' + (vals.A < 0 ? '-' : vals.A) + ' · ' + teamName(g, 'B') + '=' + (vals.B < 0 ? '-' : vals.B));
   g.env.done = true; g.env.waitTeam = null;
   addPts(g, winT, pts, 'Envido');
   restoreHeldTruco(g);
@@ -952,13 +960,13 @@ function waitingText(g) {
   if (g.status === 'finished') return '';
   if (g.handOver) return 'Mano terminada';
   if (!g.dealt) return 'Repartiendo…';
-  var tn = function (t) { return t === 'A' ? 'Equipo 1' : 'Equipo 2'; };
+  var tn = function (t) { return teamName(g, t); };
   if (g.flor.waitTeam) return 'Responde la flor: ' + tn(g.flor.waitTeam);
   if (g.env.waitTeam) return 'Responde el envido: ' + tn(g.env.waitTeam);
   if (g.tru.waitTeam) return 'Responde el truco: ' + tn(g.tru.waitTeam);
   return 'Juega ' + g.seats[g.turn].name;
 }
-window.TRUCO = {SUITS,RANKS,SUIT_NAME,SUIT_SYM,makeDeck,rk,st,power,envidoOf,isFlor,florOf,newGame,norm,apply,actionsFor,actionsForBar,can,trucoLabelFor,activeSeats,orderFrom,pieOf,teamOf,other,faltaVal,waitingText,anyWait,validDeck};
+window.TRUCO = {SUITS,RANKS,SUIT_NAME,SUIT_SYM,makeDeck,rk,st,power,envidoOf,isFlor,florOf,newGame,norm,apply,actionsFor,actionsForBar,can,trucoLabelFor,teamName,activeSeats,orderFrom,pieOf,teamOf,other,faltaVal,waitingText,anyWait,validDeck};
 })();
 
 </script>
@@ -1003,37 +1011,53 @@ const PIPPOS = {
 };
 function figureSVG(r,s){
   const c=SUITC[s], d=SUITD[s];
+  const SKIN='#f3d3ae', SKIND='#c99a68', GOLD='#e8b830', GOLDD='#9a7210';
+  const face='<circle cx="0" cy="0" r="7.6" fill="'+SKIN+'" stroke="'+SKIND+'" stroke-width="1"/>'
+    +'<circle cx="-2.6" cy="-1" r=".95" fill="#5a3a1e"/><circle cx="2.6" cy="-1" r=".95" fill="#5a3a1e"/>'
+    +'<path d="M-2.6,3 Q0,4.8 2.6,3" stroke="#8a5a30" stroke-width="1" fill="none" stroke-linecap="round"/>';
   let fig='';
-  if(r===12){ // rey
-    fig = '<path d="M36,52 L41,62 L46,52 L50,62 L54,52 L59,62 L64,52 L64,66 L36,66 Z" fill="#e8b830" stroke="#9a7210" stroke-width="1.2"/>'
-        + '<circle cx="50" cy="76" r="8" fill="#f3d3ae" stroke="#b58a5e" stroke-width="1"/>'
-        + '<path d="M34,118 L40,86 L60,86 L66,118 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1.3"/>'
-        + '<rect x="42" y="94" width="16" height="3.4" rx="1.6" fill="#e8b830"/>'
-        + pipSVG(s,50,107,.75);
-  } else if(r===11){ // caballo
-    fig = '<path d="M30,104 C30,90 38,84 48,84 L56,84 C57,76 62,72 66,74 C69,76 68,80 65,83 L66,104 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1.3"/>'
-        + '<rect x="34" y="104" width="4.4" height="12" rx="1.6" fill="'+d+'"/><rect x="60" y="104" width="4.4" height="12" rx="1.6" fill="'+d+'"/>'
-        + '<rect x="43" y="104" width="4.4" height="10" rx="1.6" fill="'+d+'"/><rect x="53" y="104" width="4.4" height="10" rx="1.6" fill="'+d+'"/>'
-        + '<circle cx="47" cy="66" r="6.4" fill="#f3d3ae" stroke="#b58a5e" stroke-width="1"/>'
-        + '<path d="M41,84 L44,72 L51,72 L52,84 Z" fill="#e8b830" stroke="#9a7210" stroke-width=".9"/>'
-        + pipSVG(s,66,58,.6);
-  } else { // 10 sota
-    fig = '<circle cx="50" cy="58" r="8" fill="#f3d3ae" stroke="#b58a5e" stroke-width="1"/>'
-        + '<path d="M38,116 L42,68 L58,68 L62,116 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1.3"/>'
-        + '<rect x="42" y="82" width="16" height="3.2" rx="1.6" fill="#e8b830"/>'
-        + pipSVG(s,66,96,.7) + '<rect x="63.4" y="70" width="4.6" height="24" rx="2" fill="#8a6a3c"/>';
+  if(r===12){ // rey: corona, melena, túnica y cetro
+    fig = '<path d="M50,124 L38,124 C34,110 34,96 39,88 L61,88 C66,96 66,110 62,124 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1.4"/>'
+        + '<path d="M39,92 Q50,98 61,92 L61,97 Q50,103 39,97 Z" fill="'+GOLD+'" opacity=".9"/>'
+        + '<path d="M36,124 L64,124 L64,127 L36,127 Z" fill="'+d+'"/>'
+        + '<path d="M40,86 Q50,80 60,86 L60,90 L40,90 Z" fill="#fff" opacity=".5"/>'
+        + '<path d="M41,64 Q38,76 42,84 M59,64 Q62,76 58,84" stroke="#7a4a20" stroke-width="3.4" fill="none" stroke-linecap="round"/>'
+        + '<g transform="translate(50,70)">'+face+'</g>'
+        + '<path d="M41,62 L44,54 L47,60 L50,52 L53,60 L56,54 L59,62 Z" fill="'+GOLD+'" stroke="'+GOLDD+'" stroke-width="1.1"/>'
+        + '<circle cx="50" cy="56.5" r="1.4" fill="#d9534f"/>'
+        + '<rect x="63" y="78" width="3.6" height="34" rx="1.8" fill="#8a6a3c" stroke="#6a4e28" stroke-width=".7"/>'
+        + pipSVG(s,64.8,72,.62);
+  } else if(r===11){ // caballo: caballito entero con jinete
+    fig = '<path d="M28,108 C27,96 34,90 44,89 L58,89 C60,84 63,80 68,79 C72,79 73,83 71,86 L69,90 C71,94 71,100 69,108 L63,108 L62,98 L38,98 L36,108 Z" fill="#e9e2d2" stroke="#a89878" stroke-width="1.3"/>'
+        + '<rect x="30" y="106" width="4" height="13" rx="1.8" fill="#a89878"/><rect x="62" y="106" width="4" height="13" rx="1.8" fill="#a89878"/>'
+        + '<rect x="39" y="97" width="4" height="14" rx="1.8" fill="#bcae90"/><rect x="55" y="97" width="4" height="14" rx="1.8" fill="#bcae90"/>'
+        + '<path d="M67,80 L72,76 M69,84 L74,82" stroke="#a89878" stroke-width="1.2"/>'
+        + '<circle cx="70" cy="82" r=".9" fill="#5a3a1e"/>'
+        + '<path d="M44,88 Q42,72 46,66 L54,66 Q57,74 55,88 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1.2"/>'
+        + '<g transform="translate(50,58) scale(.82)">'+face+'</g>'
+        + '<path d="M44,52 L56,52 L54,47 L46,47 Z" fill="'+GOLD+'" stroke="'+GOLDD+'" stroke-width=".9"/>'
+        + pipSVG(s,31,72,.55);
+  } else { // sota: paje con gorro y bastón
+    fig = '<path d="M50,122 L40,122 C38,106 39,92 43,84 L57,84 C61,92 62,106 60,122 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1.3"/>'
+        + '<path d="M43,90 Q50,95 57,90 L57,94 Q50,99 43,94 Z" fill="'+GOLD+'" opacity=".9"/>'
+        + '<rect x="41" y="120" width="7" height="4" rx="1.6" fill="'+d+'"/><rect x="52" y="120" width="7" height="4" rx="1.6" fill="'+d+'"/>'
+        + '<g transform="translate(50,66)">'+face+'</g>'
+        + '<path d="M42,60 Q50,52 58,60 L58,63 L42,63 Z" fill="'+c+'" stroke="'+d+'" stroke-width="1"/>'
+        + '<path d="M56,56 Q62,50 65,53" stroke="'+d+'" stroke-width="1.6" fill="none" stroke-linecap="round"/>'
+        + '<rect x="33.5" y="72" width="3.4" height="42" rx="1.7" fill="#8a6a3c" stroke="#6a4e28" stroke-width=".7"/>'
+        + pipSVG(s,66,96,.62);
   }
-  return '<rect x="26" y="40" width="48" height="82" rx="6" fill="none" stroke="'+c+'" stroke-width="1.6" opacity=".6"/>' + fig;
+  return '<rect x="25" y="39" width="50" height="86" rx="7" fill="none" stroke="'+c+'" stroke-width="1.5" opacity=".55"/>' + fig;
 }
 function cardSVG(code){
   const r=T.rk(code), s=T.st(code), c=SUITC[s];
   let body='';
   if(r<=7){ for(const [x,y] of PIPPOS[r]) body += pipSVG(s,x,y,1.15); }
   else body = figureSVG(r,s);
-  const idx = '<text x="10" y="21" font-family="Baloo 2,sans-serif" font-weight="800" font-size="17" fill="'+c+'">'+r+'</text>' + pipSVG(s,13,33,.55);
+  const idx = '<text x="8.5" y="22" font-family="Baloo 2,sans-serif" font-weight="800" font-size="19" fill="'+c+'">'+r+'</text>' + pipSVG(s,13.5,34,.6);
   return '<svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">'
-    + '<rect width="100" height="150" rx="8" fill="#fdf9ec"/>'
-    + '<rect x="2.5" y="2.5" width="95" height="145" rx="6.5" fill="none" stroke="#e4d7b4" stroke-width="1"/>'
+    + '<rect width="100" height="150" rx="8" fill="#fcf6e4"/>'
+    + '<rect x="2.5" y="2.5" width="95" height="145" rx="6.5" fill="none" stroke="#e2d3ac" stroke-width="1.4"/>'
     + idx + '<g transform="rotate(180,50,75)">'+idx+'</g>' + body + '</svg>';
 }
 function backSVG(){
@@ -1231,11 +1255,11 @@ const SLOTS={
   6:[{x:99,y:52},{x:82,y:6},{x:50,y:-2},{x:18,y:6},{x:1,y:52}]
 };
 const DROPS={
-  2:[{x:50,y:30}],
-  4:[{x:74,y:50},{x:50,y:30},{x:26,y:50}],
-  6:[{x:82,y:58},{x:70,y:34},{x:50,y:26},{x:30,y:34},{x:18,y:58}]
+  2:[{x:50,y:36}],
+  4:[{x:74,y:48},{x:50,y:34},{x:26,y:48}],
+  6:[{x:82,y:56},{x:70,y:36},{x:50,y:30},{x:30,y:36},{x:18,y:56}]
 };
-const MYDROP={x:50,y:70};
+const MYDROP={x:50,y:58};
 
 /* ═══════════ RENDER JUEGO ═══════════ */
 function teamCls(t){return t==='A'?'':'b';}
@@ -1263,7 +1287,7 @@ function renderGame(){
   g.results.forEach((r,i)=>{
     const t=document.createElement('div');
     t.className='bztag '+(r==='A'?'a':r==='B'?'b':'');
-    t.textContent=(i+1)+'ª '+(r==='P'?'PARDA':r==='A'?'EQ.1':'EQ.2');
+    t.textContent=(i+1)+'ª '+(r==='P'?'PARDA':(g.n===2?g.seats[r==='A'?0:1].name.slice(0,9):(r==='A'?'EQ.1':'EQ.2')));
     bb.appendChild(t);
   });
 
@@ -1283,9 +1307,9 @@ function renderGame(){
     let cardsHtml='';
     const hand=g.hands['s'+s]||[];
     if(ally){
-      cardsHtml='<div class="allyfan">'+hand.map(c=>'<div class="tcard" style="width:39px;height:58px">'+cardSVG(c)+'</div>').join('')+'</div>';
+      cardsHtml='<div class="allyfan">'+hand.map(c=>'<div class="tcard" style="width:48px;height:72px">'+cardSVG(c)+'</div>').join('')+'</div>';
     }else{
-      cardsHtml='<div class="fanback">'+hand.map((_,i)=>'<div class="cardback" style="width:39px;height:58px;transform:rotate('+((i-1)*10)+'deg)">'+backSVG()+'</div>').join('')+'</div>';
+      cardsHtml='<div class="fanback">'+hand.map((_,i)=>'<div class="cardback" style="width:54px;height:81px;transform:rotate('+((i-1)*9)+'deg)">'+backSVG()+'</div>').join('')+'</div>';
     }
     div.innerHTML=
       '<div class="pinwrap">'
@@ -1303,7 +1327,7 @@ function renderGame(){
     let di=0;
     for(let t=0;t<=Math.min(g.trick,2);t++){
       const c=g.played['t'+t]&&g.played['t'+t]['s'+s];
-      if(c){const cur=t===g.trick;const el=cardEl(c,cur?95:64); el.style.transform='rotate('+((t-1)*8)+'deg)'; el.style.zIndex=t+1; if(di>0)el.style.marginLeft=cur?'-34px':'-40px'; dd.appendChild(el); di++;}
+      if(c){const cur=t===g.trick;const el=cardEl(c,cur?90:60); el.style.transform='rotate('+((t-1)*8)+'deg)'; el.style.zIndex=t+1; if(di>0)el.style.marginLeft=cur?'-32px':'-38px'; dd.appendChild(el); di++;}
     }
     drops.appendChild(dd);
   }
@@ -1313,7 +1337,7 @@ function renderGame(){
   let mdi=0;
   for(let t=0;t<=Math.min(g.trick,2);t++){
     const c=g.played['t'+t]&&g.played['t'+t]['s'+mySeatIndex];
-    if(c){const cur=t===g.trick;const el=cardEl(c,cur?95:64); el.style.transform='rotate('+((t-1)*8)+'deg)'; el.style.zIndex=t+1; if(mdi>0)el.style.marginLeft=cur?'-34px':'-40px'; md.appendChild(el); mdi++;}
+    if(c){const cur=t===g.trick;const el=cardEl(c,cur?90:60); el.style.transform='rotate('+((t-1)*8)+'deg)'; el.style.zIndex=t+1; if(mdi>0)el.style.marginLeft=cur?'-32px':'-38px'; md.appendChild(el); mdi++;}
   }
   drops.appendChild(md);
 
@@ -1326,7 +1350,7 @@ function renderGame(){
     +(g.mano===mySeatIndex?'<div class="badge-mano">✋</div>':'')
     +(g.folded['s'+mySeatIndex]?'<div class="badge-fold">🚪</div>':'')
     +'</div></div>';
-  mp.style.left='10px'; mp.style.marginLeft='0'; mp.style.bottom='268px';
+  mp.style.left='56px'; mp.style.marginLeft='0'; mp.style.bottom='205px';
 
   // mi info + mano
   const iAmFolded=!!g.folded['s'+mySeatIndex];
@@ -1338,17 +1362,17 @@ function renderGame(){
     +(iAmFolded?' · <span style="color:#ff8f8f">te fuiste al mazo 🚪</span>':'')
     +' · es mano <b style="color:#f0b53a">'+g.seats[g.mano].name+'</b>';
   const fan=document.getElementById('myfan'); fan.innerHTML='';
-  const MYW=150; /* punto 1: cartas grandes estilo trucogame */
+  const MYW=105; /* cartas como trucogame */
   const myCards=(g.dealt&&!iAmFolded)?(g.hands['s'+mySeatIndex]||[]):[];
-  fan.style.height=(myCards.length?Math.round(MYW*1.5+30):46)+'px';
-  fan.style.setProperty('--fanoverlap',Math.round(-MYW*0.31)+'px');
+  fan.style.height=(myCards.length?Math.round(MYW*1.5+24):40)+'px';
+  fan.style.setProperty('--fanoverlap',Math.round(-MYW*0.30)+'px');
   {
     const canPlay=myTurnNow;
     const N=myCards.length;
     myCards.forEach((c,i)=>{
       const slot=document.createElement('div');
       slot.className='fslot'+(canPlay?' playable':'');
-      const rot=(i-(N-1)/2)*8, ty=Math.abs(i-(N-1)/2)*10;
+      const rot=(i-(N-1)/2)*7, ty=Math.abs(i-(N-1)/2)*7;
       slot.style.transform='rotate('+rot+'deg) translateY('+ty+'px)';
       slot.style.zIndex=i+1;
       slot.appendChild(cardEl(c,MYW));
@@ -1404,10 +1428,11 @@ function renderGame(){
   if(g.status==='finished'){
     const isW=g.winner===myTeam;
     document.getElementById('win-emo').textContent=isW?'🏆':'😔';
-    document.getElementById('win-t').textContent=isW?'¡GANARON!':'Ganó el '+(g.winner==='A'?'Equipo 1':'Equipo 2');
+    document.getElementById('win-t').textContent=isW?'¡VICTORIA!':'¡DERROTA!';
+    document.getElementById('win-sub').textContent=(isW?'Le ganaste a ':'Perdiste con ')+T.teamName(g,T.other(myTeam));
     document.getElementById('win-s').textContent=g.scores.A+' — '+g.scores.B;
-    showOv('ov-win');
-  } else hideOv('ov-win');
+    scheduleWin(g);
+  } else { hideOv('ov-win'); winShownSeq=null; }
   firstRender=false;
 }
 
@@ -1425,7 +1450,7 @@ function processLog(g){
     if(e.s>=0&&CALLWORDS.includes(e.x)){
       const bub=document.getElementById('bub-'+e.s);
       if(bub){bub.textContent=e.x.replace(' 🌸','').replace(' 🚪','');bub.classList.remove('show');void bub.offsetWidth;bub.classList.add('show');}
-      const strong=e.x.startsWith('¡')||e.x==='Me voy al mazo 🚪';
+      const strong=(e.x.startsWith('¡')||e.x==='Me voy al mazo 🚪')&&!g.handOver;
       if(strong){
         const bc=document.getElementById('bigcall');
         document.getElementById('bigcall-txt').textContent=e.x.replace('¡','').replace('!','').replace(' 🌸','').replace('Me voy al mazo 🚪','AL MAZO');
@@ -1503,7 +1528,12 @@ function doAction(action){
 /* Reparto automático (punto 5): a los 3 seg de terminar la mano, TODOS los clientes
    intentan la transaction pero Firebase garantiza que reparte exactamente UNO
    (la guarda por seq hace abortar a los demás). */
-let autoDealSeq=null;
+let autoDealSeq=null, winShownSeq=null;
+function scheduleWin(g){
+  if(winShownSeq===g.seq)return;
+  winShownSeq=g.seq;
+  setTimeout(()=>{ if(currentGame&&currentGame.status==='finished')showOv('ov-win'); },3000);
+}
 function scheduleAutoDeal(g){
   if(autoDealSeq===g.seq)return;
   autoDealSeq=g.seq;
