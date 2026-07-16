@@ -137,9 +137,13 @@ button{font-family:'Baloo 2',sans-serif;}
 /* ── zona mesa ── */
 .tablewrap{position:fixed;inset:58px 0 0 0;z-index:10;}
 .tablewrap.withchat{right:300px;}
-.tablezone{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);
-  width:min(88vw,760px);aspect-ratio:1.9/1;max-height:56vh;}
+.tablezone{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%);
+  width:min(88vw,760px);aspect-ratio:1.9/1;max-height:52vh;}
 .tablewrap.withchat .tablezone{width:min(78vw,760px);}
+@media(max-width:700px){
+  .tablezone{aspect-ratio:1.25/1;max-height:44vh;top:37%;}
+  .abtn{padding:.45rem .7rem;font-size:.74rem;}
+}
 .pedestal{position:absolute;left:50%;top:78%;transform:translateX(-50%);width:14%;height:60%;
   background:linear-gradient(90deg,#2a160a,#4a2a14 45%,#1d0e05);border-radius:0 0 20px 20px;z-index:1;}
 .pedfoot{position:absolute;left:50%;top:128%;transform:translateX(-50%);width:34%;height:8%;
@@ -191,7 +195,7 @@ button{font-family:'Baloo 2',sans-serif;}
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(0,0,0,.4);padding:0 .5rem;border-radius:8px;}
 .seatname .ally{color:#7de6a3;font-size:.6rem;}
 .fanback{display:flex;margin-top:2px;}
-.fanback .cardback{margin:0 -9px;}
+.fanback .cardback{margin:0 -12px;}
 .allyfan{display:flex;gap:2px;margin-top:2px;}
 
 /* ── burbuja de canto ── */
@@ -204,8 +208,8 @@ button{font-family:'Baloo 2',sans-serif;}
 @keyframes bubpop{0%{transform:translateX(-50%) scale(0)}10%{transform:translateX(-50%) scale(1.08)}16%{transform:translateX(-50%) scale(1)}85%{opacity:1}100%{opacity:0;transform:translateX(-50%) scale(1)}}
 
 /* ── cartas jugadas en la mesa ── */
-.drop{position:absolute;z-index:15;transform:translate(-50%,-50%);display:flex;gap:4px;}
-.drop .tcard{filter:drop-shadow(0 6px 10px rgba(0,0,0,.55));}
+.drop{position:absolute;z-index:15;transform:translate(-50%,-50%);display:flex;gap:0;align-items:center;}
+.drop .tcard{filter:drop-shadow(0 6px 10px rgba(0,0,0,.55));position:relative;}
 
 /* ── carta genérica (SVG adentro) ── */
 .tcard{border-radius:9px;overflow:hidden;background:#fdf9ec;border:3px solid #fff;
@@ -219,10 +223,10 @@ button{font-family:'Baloo 2',sans-serif;}
 .tablewrap.withchat ~ .myzone{right:300px;}
 .myinfo{font-size:.8rem;font-weight:800;color:var(--cream);background:rgba(0,0,0,.5);padding:.15rem .9rem;border-radius:12px;margin-bottom:.3rem;}
 .myinfo b{color:var(--sky);}
-.myfan{display:flex;justify-content:center;align-items:flex-end;height:118px;margin-bottom:.2rem;}
-.myfan .fslot{margin:0 -14px;transition:transform .15s;position:relative;}
+.myfan{display:flex;justify-content:center;align-items:flex-end;height:118px;margin-bottom:.2rem;--fanoverlap:-14px;}
+.myfan .fslot{margin:0 var(--fanoverlap);transition:transform .15s;position:relative;}
 .myfan .fslot.playable{cursor:pointer;}
-.myfan .fslot.playable:hover{transform:translateY(-16px) scale(1.05)!important;z-index:9!important;}
+.myfan .fslot.playable:hover{transform:translateY(-26px) scale(1.04)!important;z-index:9!important;}
 .myfan .fslot.playable .tcard{box-shadow:0 0 0 3px var(--gold),0 8px 18px rgba(0,0,0,.55);}
 .mypinrow{position:absolute;bottom:96px;z-index:36;left:50%;margin-left:-180px;}
 @media(max-width:760px){.mypinrow{margin-left:-150px;}}
@@ -238,7 +242,18 @@ button{font-family:'Baloo 2',sans-serif;}
 .abtn.no{background:linear-gradient(180deg,#d9636b,#a83239);box-shadow:0 4px 0 #74191e,0 6px 14px rgba(0,0,0,.45);}
 .abtn.flor{background:linear-gradient(180deg,#b07ce0,#7e46b8);box-shadow:0 4px 0 #562e85,0 6px 14px rgba(0,0,0,.45);}
 .abtn.go{background:linear-gradient(180deg,#ffd76a,#e8a923);color:#5c3d00;box-shadow:0 4px 0 #a87510,0 6px 14px rgba(0,0,0,.45);}
+.abtn.dis,.abtn:disabled{opacity:.32;filter:saturate(.25);pointer-events:none;box-shadow:0 3px 0 rgba(0,0,0,.3);transform:none;}
 .waitnote{color:#cfe6f5;font-weight:700;font-size:.85rem;background:rgba(0,0,0,.45);padding:.25rem .9rem;border-radius:14px;}
+
+/* ── cartel fin de mano (reparto automático) ── */
+.handres{position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);z-index:29;display:none;
+  background:rgba(4,10,18,.88);border:2px solid var(--gold);border-radius:16px;padding:.55rem 1.4rem;text-align:center;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);}
+.handres.show{display:block;animation:respop .3s ease;}
+@keyframes respop{0%{transform:translate(-50%,-50%) scale(.6);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+.handres .hr-t{font-weight:800;font-size:.95rem;color:var(--gold);letter-spacing:2px;}
+.handres .hr-s{font-weight:800;font-size:1.6rem;line-height:1.1;}
+.handres .hr-c{font-size:.76rem;color:#bcd2e2;font-weight:700;}
 
 /* ═══════════ CHAT MESA ═══════════ */
 .chatpanel{position:fixed;top:0;right:0;bottom:0;width:300px;background:#0e1826;z-index:45;
@@ -393,6 +408,7 @@ button{font-family:'Baloo 2',sans-serif;}
       <div class="woodsheen"></div>
       <div class="bazabar" id="bazabar"></div>
       <div class="bigcall" id="bigcall"><span id="bigcall-txt"></span></div>
+      <div class="handres" id="handres"></div>
       <div id="seats"></div>
       <div id="drops"></div>
     </div>
@@ -400,8 +416,9 @@ button{font-family:'Baloo 2',sans-serif;}
 
   <div class="myzone" id="myzone">
     <div class="myinfo" id="myinfo">Tu mano</div>
+    <div class="actionrow" id="ctxrow"></div>
+    <div class="actionrow" id="fixedrow"></div>
     <div class="myfan" id="myfan"></div>
-    <div class="actionrow" id="actionrow"></div>
   </div>
 
   <button class="chat-fab" id="chatfab" onclick="toggleChat()">💬<span class="fabdot" id="fabdot">0</span></button>
@@ -447,10 +464,12 @@ button{font-family:'Baloo 2',sans-serif;}
 <div class="overlay" id="ov-rules">
   <div class="modal" style="max-width:430px;text-align:left;max-height:82vh;overflow-y:auto">
     <h1 style="text-align:center">Reglas de la mesa</h1>
-    <p>• Envido 2 · Real envido 3 · Falta envido = lo que le falta al que va ganando. Cadena: hasta 4 envidos y 2 reales.<br>
+    <p>• Envido 2 · Real envido 3 · Falta envido = lo que le falta al que va ganando (querida paga solo la falta). Cadena: hasta 4 envidos y 2 reales.<br>
     • Truco 2 · Retruco 3 · Vale cuatro 4. El "no quiero" paga el valor anterior.<br>
     • Flor 3 · Contraflor querida 6 / no querida 4 · Al resto = falta · Achicarse = 4.<br>
     • Empate de envido: gana el más cercano a la mano.<br>
+    • Cantás (envido, truco, flor) cuando tenés el turno; responde el equipo que corresponde.<br>
+    • Al terminar la mano, el resultado queda 3 segundos y se reparte solo.<br>
     • Al mazo: individual, en cualquier momento. Si se va el equipo entero, el rival cobra la mano (+1 si el envido seguía vivo en la 1ª baza).<br>
     • Ves las cartas de tus compañeros. Sin límite de tiempo. ✋ = es mano.</p>
     <button class="bigbtn btn-blue" onclick="hideOv('ov-rules')">¡A jugar!</button>
@@ -510,13 +529,14 @@ function newGame(config, names) {
   var n = config.players;
   var seats = [];
   for (var i = 0; i < n; i++) seats.push({ name: names[i] || ('Jugador ' + (i + 1)), team: i % 2 === 0 ? 'A' : 'B' });
-  var g = { v: 1, config: config, n: n, seats: seats, target: config.target, scores: { A: 0, B: 0 }, status: 'playing', winner: null, handNum: 0, log: [] };
+  var g = { v: 1, config: config, n: n, seats: seats, target: config.target, scores: { A: 0, B: 0 }, status: 'playing', winner: null, handNum: 0, seq: 0, log: [] };
   var h = emptyHandFields(0);
   for (var k in h) g[k] = h[k];
   return g;
 }
 function norm(g) {
   g.log = g.log || [];
+  g.seq = g.seq || 0;
   g.played = g.played || {};
   g.played.t0 = g.played.t0 || {}; g.played.t1 = g.played.t1 || {}; g.played.t2 = g.played.t2 || {};
   g.folded = g.folded || {};
@@ -564,7 +584,7 @@ function log(g, seat, text) {
 }
 function addPts(g, team, p, label) {
   if (p <= 0) return;
-  g.scores[team] += p;
+  g.scores[team] = Math.min(g.target, g.scores[team] + p); /* tope: el score nunca supera el objetivo */
   log(g, -1, label + ': +' + p + ' para ' + (team === 'A' ? 'Equipo 1' : 'Equipo 2'));
   if (g.scores[team] >= g.target) {
     g.status = 'finished'; g.winner = team; g.handOver = true;
@@ -574,8 +594,12 @@ function addPts(g, team, p, label) {
 function faltaVal(g) { return Math.max(1, g.target - Math.max(g.scores.A, g.scores.B)); }
 function chainItemVal(g, t) { return t === 'E' ? 2 : t === 'R' ? 3 : faltaVal(g); }
 function chainQuieroVal(g) {
+  var ch = g.env.chain;
+  if (!ch.length) return 0;
+  /* Falta envido querida: paga SOLO la falta. La cadena previa cuenta únicamente para el "no quiero". */
+  if (ch[ch.length - 1].t === 'F') return faltaVal(g);
   var s = 0;
-  for (var i = 0; i < g.env.chain.length; i++) s += chainItemVal(g, g.env.chain[i].t);
+  for (var i = 0; i < ch.length; i++) s += chainItemVal(g, ch[i].t);
   return s;
 }
 function chainNoQuieroVal(g) {
@@ -728,6 +752,7 @@ function apply(prev, action) {
       g.hands['s' + i] = h.slice(); g.initHands['s' + i] = h.slice();
     }
     g.dealt = true; g.turn = g.mano; g.leader = g.mano;
+    g.seq = (g.seq || 0) + 1;
     log(g, -1, 'Mano ' + (g.handNum + 1) + ' — es mano ' + g.seats[g.mano].name); return g;
   }
   if (seat < 0 || seat >= g.n) return null;
@@ -752,9 +777,9 @@ function apply(prev, action) {
       var cmp = bestFlorTeamCompare(g), p2 = lvl === 2 ? 6 : faltaVal(g);
       log(g, seat, 'Quiero'); g.flor.state = 'done'; g.flor.waitTeam = null;
       addPts(g, cmp.team, p2, lvl === 2 ? 'Contraflor' : 'Contraflor al resto');
-      restoreHeldTruco(g); return g;
+      restoreHeldTruco(g); stepTurn(g); return g;
     }
-    if (type === 'NO_QUIERO' || type === 'ACHICO') { log(g, seat, lvl === 1 ? 'Con flor me achico' : 'No quiero'); florNoQuiero(g, team); return g; }
+    if (type === 'NO_QUIERO' || type === 'ACHICO') { log(g, seat, lvl === 1 ? 'Con flor me achico' : 'No quiero'); florNoQuiero(g, team); stepTurn(g); return g; }
     if (type === 'CONTRAFLOR') {
       if (lvl !== 1) return null;
       if (!isFlor(g.initHands['s' + seat])) return null;
@@ -775,17 +800,19 @@ function apply(prev, action) {
     if (g.flor.state === 'pending') return null;
     if (!cantaOK(g, seat)) return null;
     if (g.tru.waitTeam && team !== g.tru.waitTeam) return null;
+    if (g.env.waitTeam && team !== g.env.waitTeam) return null;
+    if (!g.tru.waitTeam && !g.env.waitTeam && g.turn !== seat) return null; /* flor de inicio: solo con el turno */
     if (g.tru.waitTeam) { g.tru.heldWait = g.tru.waitTeam; g.tru.waitTeam = null; }
     killEnvidoByFlor(g);
     g.flor.decl['s' + seat] = true;
     log(g, seat, '¡FLOR! 🌸');
-    if (g.flor.state === 'done') { addPts(g, team, 3, 'Flor'); restoreHeldTruco(g); return g; }
+    if (g.flor.state === 'done') { addPts(g, team, 3, 'Flor'); restoreHeldTruco(g); stepTurn(g); return g; }
     var oppHasFlor = false, act2 = activeSeats(g);
     for (var f = 0; f < act2.length; f++) {
       var s2 = act2[f];
       if (teamOf(g, s2) !== team && isFlor(g.initHands['s' + s2])) { oppHasFlor = true; break; }
     }
-    if (!oppHasFlor) { g.flor.state = 'done'; addPts(g, team, 3, 'Flor'); restoreHeldTruco(g); }
+    if (!oppHasFlor) { g.flor.state = 'done'; addPts(g, team, 3, 'Flor'); restoreHeldTruco(g); stepTurn(g); }
     else { g.flor.state = 'pending'; g.flor.lvl = 1; g.flor.by = team; g.flor.waitTeam = other(team); }
     return g;
   }
@@ -803,7 +830,7 @@ function apply(prev, action) {
       if (team !== g.env.waitTeam) return null;
     } else {
       if (g.env.chain.length) return null;
-      if (g.played.t0['s' + seat] != null) return null;
+      if (g.turn !== seat) return null; /* canto de inicio: solo con el turno */
     }
     var cE = 0, cR = 0, cF = 0;
     for (var c1 = 0; c1 < g.env.chain.length; c1++) {
@@ -839,6 +866,7 @@ function apply(prev, action) {
       if (!cantaOK(g, seat)) return null;
       log(g, seat, type === 'QUIERO' ? 'Quiero' : 'No quiero');
       if (type === 'QUIERO') resolveEnvidoQuiero(g); else envidoNoQuiero(g, team);
+      stepTurn(g); /* repone el turno si el que lo tenía se fue al mazo durante la espera */
       return g;
     }
     if (g.tru.waitTeam) {
@@ -847,6 +875,7 @@ function apply(prev, action) {
       if (type === 'QUIERO') {
         g.tru.val = g.tru.offerVal; g.tru.lastRaiser = g.tru.offBy;
         g.tru.offerVal = null; g.tru.offBy = null; g.tru.waitTeam = null;
+        stepTurn(g); /* repone el turno si el que lo tenía se fue al mazo durante la espera */
       } else {
         var winT2 = other(team), pv = g.tru.val;
         g.tru.waitTeam = null; g.tru.offerVal = null;
@@ -869,10 +898,11 @@ function apply(prev, action) {
   return null;
 }
 function can(g, action) { return apply(g, action) !== null; }
-function trucoLabel(g) {
-  var base = g.tru.waitTeam ? g.tru.offerVal : g.tru.val, nv = base + 1;
+function trucoLabelFor(g, seat) {
+  var base = g.tru.waitTeam ? g.tru.offerVal : g.tru.val, nv = Math.min(base + 1, 4);
   var name = nv === 2 ? 'TRUCO' : nv === 3 ? 'RETRUCO' : 'VALE CUATRO';
-  return g.tru.waitTeam ? 'QUIERO ' + name : name;
+  var resp = g.tru.waitTeam && teamOf(g, seat) === g.tru.waitTeam;
+  return resp ? 'QUIERO ' + name : name;
 }
 function actionsFor(gRaw, seat) {
   var g = norm(clone(gRaw)), out = [];
@@ -881,9 +911,7 @@ function actionsFor(gRaw, seat) {
     if (extra) for (var k in extra) a[k] = extra[k];
     if (can(g, a)) out.push({ action: a, label: label, style: style || 'plain' });
   }
-  if (g.status === 'finished') { add('RESET', 'REVANCHA', 'go'); return out; }
-  if (g.handOver) { add('NEXT', 'SIGUIENTE MANO ▶', 'go'); return out; }
-  if (!g.dealt) return out;
+  if (g.status !== 'playing' || g.handOver || !g.dealt) return out;
   add('QUIERO', 'QUIERO', 'yes');
   add('NO_QUIERO', 'NO QUIERO', 'no');
   add('ACHICO', 'CON FLOR ME ACHICO', 'no');
@@ -893,9 +921,31 @@ function actionsFor(gRaw, seat) {
   add('FLOR', 'FLOR 🌸', 'flor');
   add('CONTRAFLOR', 'CONTRAFLOR', 'flor');
   add('RESTO', 'CONTRAFLOR AL RESTO', 'flor');
-  add('TRUCO', trucoLabel(g), 'tru');
+  add('TRUCO', trucoLabelFor(g, seat), 'tru');
   add('MAZO', 'IR AL MAZO', 'mazo');
   return out;
+}
+/* Botonera fija (punto 9): fijos siempre visibles con enabled true/false + contextuales */
+function actionsForBar(gRaw, seat) {
+  var g = norm(clone(gRaw));
+  var inPlay = g.status === 'playing' && g.dealt && !g.handOver;
+  function en(type) { return inPlay && can(g, { type: type, seat: seat }); }
+  var fixed = [
+    { type: 'ENVIDO', label: 'ENVIDO', style: 'env', enabled: en('ENVIDO') },
+    { type: 'REAL', label: 'REAL ENVIDO', style: 'env', enabled: en('REAL') },
+    { type: 'FALTA', label: 'FALTA ENVIDO', style: 'env', enabled: en('FALTA') },
+    { type: 'TRUCO', label: trucoLabelFor(g, seat), style: 'tru', enabled: en('TRUCO') },
+    { type: 'MAZO', label: 'AL MAZO', style: 'mazo', enabled: en('MAZO') }
+  ];
+  var ctx = [];
+  function cx(type, label, style) { if (inPlay && can(g, { type: type, seat: seat })) ctx.push({ type: type, label: label, style: style }); }
+  cx('QUIERO', 'QUIERO', 'yes');
+  cx('NO_QUIERO', 'NO QUIERO', 'no');
+  cx('FLOR', 'FLOR 🌼', 'flor');
+  cx('CONTRAFLOR', 'CONTRAFLOR', 'flor');
+  cx('RESTO', 'CONTRAFLOR AL RESTO', 'flor');
+  cx('ACHICO', 'CON FLOR ME ACHICO', 'no');
+  return { fixed: fixed, ctx: ctx };
 }
 function waitingText(g) {
   g = norm(clone(g));
@@ -908,7 +958,7 @@ function waitingText(g) {
   if (g.tru.waitTeam) return 'Responde el truco: ' + tn(g.tru.waitTeam);
   return 'Juega ' + g.seats[g.turn].name;
 }
-window.TRUCO = {SUITS,RANKS,SUIT_NAME,SUIT_SYM,makeDeck,rk,st,power,envidoOf,isFlor,florOf,newGame,norm,apply,actionsFor,activeSeats,orderFrom,pieOf,teamOf,other,faltaVal,waitingText,anyWait,validDeck};
+window.TRUCO = {SUITS,RANKS,SUIT_NAME,SUIT_SYM,makeDeck,rk,st,power,envidoOf,isFlor,florOf,newGame,norm,apply,actionsFor,actionsForBar,can,trucoLabelFor,activeSeats,orderFrom,pieOf,teamOf,other,faltaVal,waitingText,anyWait,validDeck};
 })();
 
 </script>
@@ -1181,11 +1231,11 @@ const SLOTS={
   6:[{x:99,y:52},{x:82,y:6},{x:50,y:-2},{x:18,y:6},{x:1,y:52}]
 };
 const DROPS={
-  2:[{x:50,y:32}],
+  2:[{x:50,y:30}],
   4:[{x:74,y:50},{x:50,y:30},{x:26,y:50}],
   6:[{x:82,y:58},{x:70,y:34},{x:50,y:26},{x:30,y:34},{x:18,y:58}]
 };
-const MYDROP={x:50,y:76};
+const MYDROP={x:50,y:70};
 
 /* ═══════════ RENDER JUEGO ═══════════ */
 function teamCls(t){return t==='A'?'':'b';}
@@ -1233,9 +1283,9 @@ function renderGame(){
     let cardsHtml='';
     const hand=g.hands['s'+s]||[];
     if(ally){
-      cardsHtml='<div class="allyfan">'+hand.map(c=>'<div class="tcard" style="width:30px;height:45px">'+cardSVG(c)+'</div>').join('')+'</div>';
+      cardsHtml='<div class="allyfan">'+hand.map(c=>'<div class="tcard" style="width:39px;height:58px">'+cardSVG(c)+'</div>').join('')+'</div>';
     }else{
-      cardsHtml='<div class="fanback">'+hand.map((_,i)=>'<div class="cardback" style="width:30px;height:45px;transform:rotate('+((i-1)*10)+'deg)">'+backSVG()+'</div>').join('')+'</div>';
+      cardsHtml='<div class="fanback">'+hand.map((_,i)=>'<div class="cardback" style="width:39px;height:58px;transform:rotate('+((i-1)*10)+'deg)">'+backSVG()+'</div>').join('')+'</div>';
     }
     div.innerHTML=
       '<div class="pinwrap">'
@@ -1250,18 +1300,20 @@ function renderGame(){
     // drop de cartas jugadas
     const dd=document.createElement('div');
     dd.className='drop'; dd.style.left=dpos[k-1].x+'%'; dd.style.top=dpos[k-1].y+'%';
+    let di=0;
     for(let t=0;t<=Math.min(g.trick,2);t++){
       const c=g.played['t'+t]&&g.played['t'+t]['s'+s];
-      if(c){const el=cardEl(c, t===g.trick?52:40); el.style.transform='rotate('+((t-1)*7)+'deg)'; dd.appendChild(el);}
+      if(c){const cur=t===g.trick;const el=cardEl(c,cur?95:64); el.style.transform='rotate('+((t-1)*8)+'deg)'; el.style.zIndex=t+1; if(di>0)el.style.marginLeft=cur?'-34px':'-40px'; dd.appendChild(el); di++;}
     }
     drops.appendChild(dd);
   }
   // mi drop
   const md=document.createElement('div');
   md.className='drop'; md.style.left=MYDROP.x+'%'; md.style.top=MYDROP.y+'%';
+  let mdi=0;
   for(let t=0;t<=Math.min(g.trick,2);t++){
     const c=g.played['t'+t]&&g.played['t'+t]['s'+mySeatIndex];
-    if(c){const el=cardEl(c, t===g.trick?52:40); el.style.transform='rotate('+((t-1)*7)+'deg)'; md.appendChild(el);}
+    if(c){const cur=t===g.trick;const el=cardEl(c,cur?95:64); el.style.transform='rotate('+((t-1)*8)+'deg)'; el.style.zIndex=t+1; if(mdi>0)el.style.marginLeft=cur?'-34px':'-40px'; md.appendChild(el); mdi++;}
   }
   drops.appendChild(md);
 
@@ -1274,6 +1326,7 @@ function renderGame(){
     +(g.mano===mySeatIndex?'<div class="badge-mano">✋</div>':'')
     +(g.folded['s'+mySeatIndex]?'<div class="badge-fold">🚪</div>':'')
     +'</div></div>';
+  mp.style.left='10px'; mp.style.marginLeft='0'; mp.style.bottom='268px';
 
   // mi info + mano
   const iAmFolded=!!g.folded['s'+mySeatIndex];
@@ -1285,42 +1338,67 @@ function renderGame(){
     +(iAmFolded?' · <span style="color:#ff8f8f">te fuiste al mazo 🚪</span>':'')
     +' · es mano <b style="color:#f0b53a">'+g.seats[g.mano].name+'</b>';
   const fan=document.getElementById('myfan'); fan.innerHTML='';
-  if(g.dealt&&!iAmFolded){
-    const cards=g.hands['s'+mySeatIndex]||[];
+  const MYW=150; /* punto 1: cartas grandes estilo trucogame */
+  const myCards=(g.dealt&&!iAmFolded)?(g.hands['s'+mySeatIndex]||[]):[];
+  fan.style.height=(myCards.length?Math.round(MYW*1.5+30):46)+'px';
+  fan.style.setProperty('--fanoverlap',Math.round(-MYW*0.31)+'px');
+  {
     const canPlay=myTurnNow;
-    const N=cards.length;
-    cards.forEach((c,i)=>{
+    const N=myCards.length;
+    myCards.forEach((c,i)=>{
       const slot=document.createElement('div');
       slot.className='fslot'+(canPlay?' playable':'');
-      const rot=(i-(N-1)/2)*9, ty=Math.abs(i-(N-1)/2)*8;
+      const rot=(i-(N-1)/2)*8, ty=Math.abs(i-(N-1)/2)*10;
       slot.style.transform='rotate('+rot+'deg) translateY('+ty+'px)';
       slot.style.zIndex=i+1;
-      slot.appendChild(cardEl(c,78));
+      slot.appendChild(cardEl(c,MYW));
       if(canPlay)slot.onclick=()=>doAction({type:'PLAY',seat:mySeatIndex,card:c});
       fan.appendChild(slot);
     });
   }
 
-  // acciones
-  const row=document.getElementById('actionrow'); row.innerHTML='';
-  const acts=T.actionsFor(g,mySeatIndex);
-  const styleMap={yes:'yes',no:'no',env:'',tru:'',flor:'flor',mazo:'mazo',go:'go',plain:''};
-  if(!acts.length){
+  // acciones — botonera fija estilo trucogame + contextuales (punto 9)
+  const bar=T.actionsForBar(g,mySeatIndex);
+  const ctxrow=document.getElementById('ctxrow'); ctxrow.innerHTML='';
+  const fixedrow=document.getElementById('fixedrow'); fixedrow.innerHTML='';
+  const stMap={yes:'yes',no:'no',env:'',tru:'',flor:'flor',mazo:'mazo'};
+  const inPlay=g.status==='playing'&&g.dealt&&!g.handOver;
+  if(inPlay&&!bar.ctx.length&&!myTurnNow){
     const w=document.createElement('div'); w.className='waitnote';
     w.textContent=T.waitingText(g)+' — sin apuro, no hay reloj ⏳';
-    row.appendChild(w);
+    ctxrow.appendChild(w);
   }
-  acts.forEach(({action,label,style})=>{
-    const b=document.createElement('button');
-    b.className='abtn '+(styleMap[style]||'');
-    b.textContent=label.replace(' 🌸','')+(action.type==='FLOR'?' 🌼':'');
-    if(action.type==='MAZO'){ b.textContent='AL MAZO'; b.onclick=()=>showOv('ov-mazo'); }
-    else b.onclick=()=>doAction(action);
-    row.appendChild(b);
+  bar.ctx.forEach(b=>{
+    const btn=document.createElement('button');
+    btn.className='abtn '+(stMap[b.style]||'');
+    btn.textContent=b.label;
+    btn.onclick=()=>doAction({type:b.type,seat:mySeatIndex});
+    ctxrow.appendChild(btn);
+  });
+  bar.fixed.forEach(b=>{
+    const btn=document.createElement('button');
+    btn.className='abtn '+(stMap[b.style]||'')+(b.enabled?'':' dis');
+    btn.disabled=!b.enabled;
+    btn.textContent=b.label;
+    if(b.type==='MAZO') btn.onclick=()=>showOv('ov-mazo');
+    else btn.onclick=()=>doAction({type:b.type,seat:mySeatIndex});
+    fixedrow.appendChild(btn);
   });
 
   // cantos nuevos → burbujas + cartelón + feed
   processLog(g);
+
+  // fin de mano → resultado 3 seg + reparto automático (punto 5)
+  const hr=document.getElementById('handres');
+  if(g.status==='playing'&&g.dealt&&g.handOver){
+    const manoRes=[...g.log].reverse().find(e=>e.s===-1&&e.x.indexOf(': +')>=0);
+    hr.innerHTML='<div class="hr-t">FIN DE LA MANO</div>'
+      +'<div class="hr-s"><span style="color:#a8dcff">'+g.scores.A+'</span> — <span style="color:#ffb3c6">'+g.scores.B+'</span></div>'
+      +(manoRes?('<div class="hr-c">'+esc(manoRes.x)+'</div>'):'')
+      +'<div class="hr-c">repartiendo la próxima…</div>';
+    hr.classList.add('show');
+    scheduleAutoDeal(g);
+  } else hr.classList.remove('show');
 
   // fin de partida
   if(g.status==='finished'){
@@ -1420,11 +1498,33 @@ function doAction(action){
   if(!currentGame||!gameRef)return;
   const next=T.apply(currentGame,action);
   if(!next)return;
-  if(action.type==='NEXT'){
-    const dealt=T.apply(next,{type:'DEAL',deck:shuffleDeck()});
-    gameRef.set(dealt||next);
-  }else gameRef.set(next);
+  gameRef.set(next);
 }
+/* Reparto automático (punto 5): a los 3 seg de terminar la mano, TODOS los clientes
+   intentan la transaction pero Firebase garantiza que reparte exactamente UNO
+   (la guarda por seq hace abortar a los demás). */
+let autoDealSeq=null;
+function scheduleAutoDeal(g){
+  if(autoDealSeq===g.seq)return;
+  autoDealSeq=g.seq;
+  const key=g.seq, myDeck=shuffleDeck();
+  setTimeout(()=>{
+    const cg=currentGame;
+    if(!cg||!gameRef)return;
+    if(!(cg.status==='playing'&&cg.handOver&&cg.dealt&&(cg.seq||0)===key))return;
+    try{
+      gameRef.transaction(cur=>{
+        if(!cur)return; // sin caché local: aborta, reparte otro cliente
+        const c=T.norm(JSON.parse(JSON.stringify(cur)));
+        if(!(c.status==='playing'&&c.handOver&&c.dealt&&(c.seq||0)===key))return; // ya repartió otro
+        let nx=T.apply(c,{type:'NEXT'}); if(!nx)return;
+        nx=T.apply(nx,{type:'DEAL',deck:myDeck}); if(!nx)return;
+        return nx;
+      },function(){},false);
+    }catch(e){}
+  },3000);
+}
+window.addEventListener('resize',()=>{ if(currentGame&&document.getElementById('game').classList.contains('on'))renderGame(); });
 function confirmMazo(){hideOv('ov-mazo');doAction({type:'MAZO',seat:mySeatIndex});}
 function doReset(){
   hideOv('ov-win');
